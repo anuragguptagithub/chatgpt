@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title id="tabTitle">BPMN</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <style>
+      #json-output {
+        white-space: pre-wrap;
+      }
+    </style>
+    <script>
+      function activateJSON() {
+        const jsonInput = document.getElementById("json-input").value;
+        try {
+          const jsonData = JSON.parse(jsonInput);
+          document.getElementById("json-output").innerText = JSON.stringify(jsonData, null, 2);
+          const tabTitle = jsonData.process.sequence["1"].title;
+		  const headTitle = jsonData.process.info.type;
+		  const bodyTitle = jsonData.process.info.name;
+          document.getElementById("tabTitle").innerText = tabTitle;
+		  document.getElementById("headTitle").innerText = headTitle;
+		  document.getElementById("bodyTitle").innerText = bodyTitle;
+        } catch (error) {
+          document.getElementById("json-output").innerText = error;
+        }
+      }
+
+      function showExample() {
+        const example = `{
+  "process": {
+		"info": {
+            "type": "pseudoBPMN",
+			"name": "Resturlaub beantragen",
+            "server": "https://integration-suite-dev-17jvicj8.it-cpi018-rt.cfapps.eu10-003.hana.ondemand.com",
+            "prefix": "/http/DEV/BPMN/",
+            "version": "v1"
+		},
+       "sequence": {
+            "1": {
+                "title": "START",
+                "head": "Workflow: Resturlaub beantragen",
+                "start bttn": "START",
+                "next": "2"
+            },
+            "2": {
+                "title": "XOR-JOIN",
+                "head": "OK",
+                "wait bttn": "GO",
+                "next": "3",
+                "wait sec": "20"
+            },
+            "3": {
+                "title": "XOR-SPLIT",
+                "head": "Du möchtest Deinen Resturlaub verbrauchen ? ",
+                "Y bttn": "JA",
+                "N bttn": "NEIN",
+                "Y next": "4",
+                "N next": "7"
+            },
+            "4": {
+                "title": "XOR-SPLIT",
+                "head": "Alles auf einmal ? ",
+                "Y bttn": "JA, ALLES AUF EINMAL",
+                "N bttn": "LIEBER NICHT….",
+                "Y next": "5",
+                "N next": "7"
+            },
+            "5": {
+                "title": "XOR-SPLIT",
+                "head": "Du bleibst dabei ? ",
+                "Y bttn": "JESS.",
+                "N bttn": "NOPE",
+                "Y next": "6",
+                "N next": "7"
+            },
+            "6": {
+                "title": "STOP",
+                "head": "Workflow erfolgreich beendet",
+                "inactive Stop bttn": "STOP."
+            },
+            "7": {
+                "title": "XOR-JOIN",
+                "head": "OK, let‘ s stop that",
+                "wait bttn": "Cancel",
+                "next": "8",
+                "wait sec": "20"
+            },
+            "8": {
+                "title": "XOR-SPLIT",
+                "head": "Wiederholen ?",
+                "Y bttn": "JA",
+                "N bttn": "NEIN",
+                "Y next": "2",
+                "N next": "9"
+            },
+            "9": {
+                "title": "STOP",
+                "head": "Workflow erfolglos beendet",
+                "inactive Stop bttn": "STOP."
+            }
+        }
+    }
+}`;
+        document.getElementById("json-input").value = example;
+      }
+    </script>
+  </head>
+  <body>
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+      <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+          <span class="mdl-layout-title" id="headTitle" >ENGINE</span>
+        </div>
+        <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
+          <a href="#model" class="mdl-layout__tab is-active">Model</a>
+          <a href="#log" class="mdl-layout__tab">Log</a>
+          <a href="#gui" class="mdl-layout__tab">GUI</a>
+        </div>
+      </header>
+      <main class="mdl-layout__content">
+        <section class="mdl-layout__tab-panel is-active" id="model">
+          <div class="mdl-grid">
+            <div class="mdl-cell mdl-cell--12-col">
+              <h1 class="mdl-cell mdl-cell--12-col" id="bodyTitle">Capre Diem</h1>
+            </div>
+            <div class="mdl-cell mdl-cell--12-col">
+              <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <textarea class="mdl-textfield__input" type="text" rows="10" id="json-input"></textarea>
+                <label class="mdl-textfield__label" for="json-input">JSON input</label>
+              </div>
+            </div>
+            <div class="mdl-cell mdl-cell--2-col">
+              <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" onclick="activateJSON()">Activate JSON</button>
+            </div>
+            <div class="mdl-cell mdl-cell--6-col">
+              <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" onclick="showExample()">Example</button>
+            </div>
+            <div class="mdl-cell mdl-cell--12-col">
+              <pre id="json-output"></pre>
+            </div>
+          </div>
+        </section>
+        <section class="mdl-layout__tab-panel" id="log">
+          <div class="mdl-grid">
+            <div class="mdl-cell mdl-cell--12-col">
+              <h1 class="mdl-cell mdl-cell--12-col">Log</h1>
+            </div>
+          </div>
+        </section>
+        <section class="mdl-layout__tab-panel" id="gui">
+          <div class="mdl-grid">
+            <div class="mdl-cell mdl-cell--12-col">
+              <h1 class="mdl-cell mdl-cell--12-col">GUI</h1>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
