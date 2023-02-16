@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Drag and Drop Boxes</title>
+	<style>
+		.container {
+			display: flex;
+			flex-wrap: wrap;
+			width: 80%;
+			margin: 0 auto;
+			padding: 20px;
+			border: 1px solid black;
+		}
+
+		.box {
+			width: 50px;
+			height: 50px;
+			margin: 10px;
+			background-color: red;
+			color: white;
+			text-align: center;
+			line-height: 50px;
+			cursor: move;
+		}
+	</style>
+</head>
+<body>
+	<h1>Drag and Drop Boxes</h1>
+	<p>Drag the boxes around and drop them anywhere in the container.</p>
+
+	<div class="container">
+		<div class="box" draggable="true">Box 1</div>
+		<div class="box" draggable="true">Box 2</div>
+		<div class="box" draggable="true">Box 3</div>
+		<div class="box" draggable="true">Box 4</div>
+		<div class="box" draggable="true">Box 5</div>
+	</div>
+
+	<script>
+		var dragSrcEl = null;
+
+		function handleDragStart(e) {
+			this.style.opacity = '0.4';
+			dragSrcEl = this;
+
+			e.dataTransfer.effectAllowed = 'move';
+			e.dataTransfer.setData('text/html', this.innerHTML);
+		}
+
+		function handleDragOver(e) {
+			if (e.preventDefault) {
+				e.preventDefault();
+			}
+
+			e.dataTransfer.dropEffect = 'move';
+
+			return false;
+		}
+
+		function handleDragEnter(e) {
+			this.classList.add('over');
+		}
+
+		function handleDragLeave(e) {
+			this.classList.remove('over');
+		}
+
+		function handleDrop(e) {
+			if (e.stopPropagation) {
+				e.stopPropagation();
+			}
+
+			if (dragSrcEl != this) {
+				dragSrcEl.innerHTML = this.innerHTML;
+				this.innerHTML = e.dataTransfer.getData('text/html');
+			}
+
+			return false;
+		}
+
+		function handleDragEnd(e) {
+			this.style.opacity = '1';
+
+			var boxes = document.querySelectorAll('.box');
+			[].forEach.call(boxes, function(box) {
+				box.classList.remove('over');
+			});
+		}
+
+		var boxes = document.querySelectorAll('.box');
+		[].forEach.call(boxes, function(box) {
+			box.addEventListener('dragstart', handleDragStart, false);
+			box.addEventListener('dragenter', handleDragEnter, false);
+			box.addEventListener('dragover', handleDragOver, false);
+			box.addEventListener('dragleave', handleDragLeave, false);
+			box.addEventListener('drop', handleDrop, false);
+			box.addEventListener('dragend', handleDragEnd, false);
+		});
+	</script>
+</body>
+</html>
